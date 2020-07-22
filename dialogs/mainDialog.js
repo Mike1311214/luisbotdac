@@ -66,7 +66,7 @@ class MainDialog extends ComponentDialog {
             return await stepContext.next();
         }
 
-        const messageText = stepContext.options.restartMsg ? stepContext.options.restartMsg : 'How can I help?';
+        const messageText = stepContext.options.restartMsg ? stepContext.options.restartMsg : 'Welcome to DAC';
         const promptMessage = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
         return await stepContext.prompt('TextPrompt', { prompt: promptMessage });
     }
@@ -170,6 +170,10 @@ class MainDialog extends ComponentDialog {
             return await stepContext.beginDialog('clubDialog', clubsDetails);
             break;
         }
+        case 'hello':{
+            await stepContext.context.sendActivity("Hello. I am DAC bot", "Hello. I am DAC bot ", InputHints.IgnoringInput);
+            break;
+        }
 
         default: {
             // Catch all for unhandled intents
@@ -233,7 +237,7 @@ class MainDialog extends ComponentDialog {
         }
 
         // Restart the main dialog with a different message the second time around
-        return await stepContext.replaceDialog(this.initialDialogId, { restartMsg: 'What else can I do for you?' });
+        return await stepContext.replaceDialog(this.initialDialogId, { restartMsg: 'How can I help you?' });
     }
 }
 

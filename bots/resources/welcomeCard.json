@@ -13,7 +13,7 @@
       "spacing": "medium",
       "size": "default",
       "weight": "bolder",
-      "text": "Welcome to DAC bot",
+      "text": "",
       "wrap": true,
       "maxLines": 0
     }
