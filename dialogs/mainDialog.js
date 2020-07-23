@@ -15,7 +15,7 @@ const MAIN_WATERFALL_DIALOG = 'mainWaterfallDialog';
 
 
 class MainDialog extends ComponentDialog {
-    constructor(luisRecognizer, bookingDialog,clubDialog) {
+    constructor(luisRecognizer, bookingDialog,clubDialog,thankyouDialog) {
         super('MainDialog');
 
         if (!luisRecognizer) throw new Error('[MainDialog]: Missing parameter \'luisRecognizer\' is required');
@@ -28,6 +28,7 @@ class MainDialog extends ComponentDialog {
         this.addDialog(new TextPrompt('TextPrompt'))
             // .addDialog(bookingDialog)
             .addDialog(clubDialog)
+            .addDialog(thankyouDialog)
             .addDialog(new WaterfallDialog(MAIN_WATERFALL_DIALOG, [
                 this.introStep.bind(this),
                 this.actStep.bind(this),
@@ -174,7 +175,10 @@ class MainDialog extends ComponentDialog {
             await stepContext.context.sendActivity("Hello. I am DAC bot", "Hello. I am DAC bot ", InputHints.IgnoringInput);
             break;
         }
-
+        case 'Thankyou':{
+            return await stepContext.beginDialog('thankyouDialog', {});
+            break;
+        }
         default: {
             // Catch all for unhandled intents
             const didntUnderstandMessageText = `Sorry, I didn't get that. Please try asking in a different way for example "aviation club"`;
@@ -225,7 +229,7 @@ class MainDialog extends ComponentDialog {
         //     const msg = `I have you booked to ${ result.destination } from ${ result.origin } on ${ travelDateMsg }.`;
         //     await stepContext.context.sendActivity(msg, msg, InputHints.IgnoringInput);
         // }
-        if (stepContext.result) {
+        if (stepContext.result.club) {
             const result = stepContext.result;
             console.log("final step of main dialog-",stepContext.result)
             let finalClub = await this.toUpper(result.club)
@@ -234,6 +238,12 @@ class MainDialog extends ComponentDialog {
             details = textversionjs(details)
             console.log("details from contentstack",details)
             await stepContext.context.sendActivity(details, details, InputHints.IgnoringInput);
+        } else if (stepContext.result.Yes) {
+            console.log("Yes final=====",)
+            return await stepContext.replaceDialog(this.initialDialogId, { restartMsg: stepContext.result.Yes });
+        } else if (stepContext.result.No) {
+            await stepContext.context.sendActivity(stepContext.result.No, stepContext.result.No, InputHints.IgnoringInput);
+            return stepContext.endDialog();
         }
 
         // Restart the main dialog with a different message the second time around

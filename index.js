@@ -26,6 +26,9 @@ const { MainDialog } = require('./dialogs/mainDialog');
 // the bot's booking dialog
 const { BookingDialog } = require('./dialogs/bookingDialog');
 const {ClubDialog} = require('./dialogs/clubDialog');
+const {ThankyouDialog} = require('./dialogs/thankyouDialog');
+
+const THANKYOU_DIALOG = 'thankyouDialog';
 const CLUB_DIALOG = 'clubDialog';
 const BOOKING_DIALOG = 'bookingDialog';
 
@@ -84,7 +87,8 @@ const luisRecognizer = new clubRecognizer(luisConfig);
 // Create the main dialog.
 const bookingDialog = new BookingDialog(BOOKING_DIALOG);
 const clubDialog = new ClubDialog(CLUB_DIALOG);
-const dialog = new MainDialog(luisRecognizer, bookingDialog,clubDialog);
+const thankyouDialog = new ThankyouDialog(THANKYOU_DIALOG);
+const dialog = new MainDialog(luisRecognizer, bookingDialog,clubDialog,thankyouDialog);
 const bot = new DialogAndWelcomeBot(conversationState, userState, dialog);
 
 // Create HTTP server
