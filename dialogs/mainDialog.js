@@ -172,7 +172,9 @@ class MainDialog extends ComponentDialog {
             break;
         }
         case 'hello':{
-            await stepContext.context.sendActivity("Hello. I am DAC bot", "Hello. I am DAC bot ", InputHints.IgnoringInput);
+            // await stepContext.context.sendActivity("Hello. I am DAC bot", "Hello. I am DAC bot ", InputHints.IgnoringInput);
+            return await stepContext.replaceDialog(this.initialDialogId, { restartMsg: "Hello. How can I help you?" });
+
             break;
         }
         case 'Thankyou':{
@@ -229,25 +231,29 @@ class MainDialog extends ComponentDialog {
         //     const msg = `I have you booked to ${ result.destination } from ${ result.origin } on ${ travelDateMsg }.`;
         //     await stepContext.context.sendActivity(msg, msg, InputHints.IgnoringInput);
         // }
-        if (stepContext.result.club) {
-            const result = stepContext.result;
-            console.log("final step of main dialog-",stepContext.result)
-            let finalClub = await this.toUpper(result.club)
-            console.log("upper case finalClub--",finalClub)
-            let details = await this.clubFromContentStact(finalClub)
-            details = textversionjs(details)
-            console.log("details from contentstack",details)
-            await stepContext.context.sendActivity(details, details, InputHints.IgnoringInput);
-        } else if (stepContext.result.Yes) {
-            console.log("Yes final=====",)
-            return await stepContext.replaceDialog(this.initialDialogId, { restartMsg: stepContext.result.Yes });
-        } else if (stepContext.result.No) {
-            await stepContext.context.sendActivity(stepContext.result.No, stepContext.result.No, InputHints.IgnoringInput);
-            return stepContext.endDialog();
-        }
+        if(stepContext.result){
 
+            if (stepContext.result.club) {
+                const result = stepContext.result;
+                console.log("final step of main dialog-",stepContext.result)
+                let finalClub = await this.toUpper(result.club)
+                console.log("upper case finalClub--",finalClub)
+                let details = await this.clubFromContentStact(finalClub)
+                details = textversionjs(details)
+                console.log("details from contentstack",details)
+                await stepContext.context.sendActivity(details, details, InputHints.IgnoringInput);
+            } else if (stepContext.result.Yes) {
+                console.log("Yes final=====",)
+                return await stepContext.replaceDialog(this.initialDialogId, { restartMsg: stepContext.result.Yes });
+            } else if (stepContext.result.No) {
+                await stepContext.context.sendActivity(stepContext.result.No, stepContext.result.No, InputHints.IgnoringInput);
+                return stepContext.endDialog();
+            }
+
+        }
+        
         // Restart the main dialog with a different message the second time around
-        return await stepContext.replaceDialog(this.initialDialogId, { restartMsg: 'How can I help you?' });
+        return await stepContext.replaceDialog(this.initialDialogId, { restartMsg: 'What else I can do for you?' });
     }
 }
 
