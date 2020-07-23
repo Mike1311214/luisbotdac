@@ -246,8 +246,9 @@ class MainDialog extends ComponentDialog {
                 console.log("Yes final=====",)
                 return await stepContext.replaceDialog(this.initialDialogId, { restartMsg: stepContext.result.Yes });
             } else if (stepContext.result.No) {
-                await stepContext.context.sendActivity(stepContext.result.No, stepContext.result.No, InputHints.IgnoringInput);
-                return stepContext.endDialog();
+                return await stepContext.replaceDialog(this.initialDialogId, { restartMsg: stepContext.result.No });
+                // await stepContext.context.sendActivity(stepContext.result.No, stepContext.result.No, InputHints.IgnoringInput);
+                // return stepContext.endDialog();
             }
 
         }
